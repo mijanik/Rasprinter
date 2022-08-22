@@ -1,18 +1,12 @@
 from flask import Flask, render_template, redirect, url_for
-import RPi.GPIO as GPIO
-from raspfunc import get_temp_M105, get_temp_hum_SI7021, get_temp_hum_AHT31, get_temp_press_BMP280
-
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(13, GPIO.OUT)
-GPIO.setup(19, GPIO.OUT)
-GPIO.setup(26, GPIO.OUT)
-
-GPIO.output(13, 0)
-GPIO.output(19, 0)
-GPIO.output(26, 0)
+from raspfunc import get_temp_M105, get_temp_hum_SI7021, get_temp_hum_AHT31, get_temp_press_BMP280, set_LED
+from sensor_database import *
+import threading
+from monitor import MainMonitor
 
 app = Flask(__name__)
+
+
 
 @app.route('/')
 def index():
@@ -24,24 +18,30 @@ def index():
 
 @app.route('/RED_ON')
 def red_on():
-    GPIO.output(13, 1)
+    set_LED('RED', 'ON')
     return redirect(url_for('index'))
     
 @app.route('/GREEN_ON')
 def green_on():
-    GPIO.output(19, 1)
+    set_LED('GREEN', 'ON')
     return redirect(url_for('index'))
     
 @app.route('/BLUE_ON')
 def blue_on():
-    GPIO.output(26, 1)
+    set_LED('BLUE', 'ON')
     return redirect(url_for('index'))
     
 @app.route('/ALL_OFF')
 def all_off():
-    GPIO.output(13, 0)
-    GPIO.output(19, 0)
-    GPIO.output(26, 0)
+    set_LED('RED', 'OFF')
+    set_LED('GREEN', 'OFF')
+    set_LED('BLUE', 'OFF')
+    return redirect(url_for('index'))
+
+@app.route('/TOGGLE_MONITOR')
+def toggle_monitor():
+    print(MySensors.MonitorRunningFlag)
+    MySensors.MonitorRunningFlag ^= 1
     return redirect(url_for('index'))
 
 @app.route('/favicon.ico')
@@ -50,4 +50,8 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
-    app.run(debug=True, host='192.168.100.76')
+    #app.run(debug=True, host='192.168.100.76')
+    threading.Thread(target=lambda: app.run(host='192.168.100.76', port=5000, debug=True, use_reloader=False)).start()
+    print("Started Flask Thread")
+    threading.Thread(target=MainMonitor).start()
+    print("Started Monitor")

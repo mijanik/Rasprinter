@@ -6,6 +6,18 @@ import busio
 import adafruit_ssd1306
 import adafruit_bmp280
 from PIL import Image, ImageDraw, ImageFont
+import RPi.GPIO as GPIO
+
+print("Initializing LEDs")
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(13, GPIO.OUT)
+GPIO.setup(19, GPIO.OUT)
+GPIO.setup(26, GPIO.OUT)
+GPIO.output(13, 0)
+GPIO.output(19, 0)
+GPIO.output(26, 0)
 
 print("Initializing serial connection to printer at /dev/ttyACM0, 115200")
 ser = serial.Serial(
@@ -21,6 +33,58 @@ oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=0x3C)
 
 print("OK")
 
+
+#RED or GREEN or BLUE
+#ON or OFF
+def set_LED(LED_Color: str, LED_Status):
+
+    if LED_Color == 'RED':
+        if LED_Status == 'ON' or LED_Status == 1:
+            GPIO.output(13, 1)
+        elif LED_Status == 'OFF' or LED_Status == 0:
+            GPIO.output(13, 0)
+    elif LED_Color == 'GREEN':
+        if LED_Status == 'ON' or LED_Status == 1:
+            GPIO.output(19, 1)
+        elif LED_Status == 'OFF' or LED_Status == 0:
+            GPIO.output(19, 0)
+    elif LED_Color == 'BLUE':
+        if LED_Status == 'ON' or LED_Status == 1:
+            GPIO.output(26, 1)
+        elif LED_Status == 'OFF' or LED_Status == 0:
+            GPIO.output(26, 0)
+
+
+def show_status_OK():
+    # Clear display.
+    oled.fill(0)
+    oled.show()
+
+  
+    # Create blank image for drawing.
+    # Make sure to create image with mode '1' for 1-bit color.
+    image = Image.new("1", (oled.width, oled.height))
+    
+    # Get drawing object to draw on image.
+    draw = ImageDraw.Draw(image)
+    
+    # Load default font.
+    font = ImageFont.load_default()
+    
+    # Draw Some Text
+    text = "OK"
+    (font_width, font_height) = font.getsize(text)
+    draw.text(
+        (oled.width // 2 - font_width // 2, oled.height // 2 - font_height // 2),
+        text,
+        font=font,
+        fill=255,
+    )
+    
+    # Display image
+    oled.image(image)
+    oled.show()
+    
 
 def get_temp_M105():
     # uses M105 marlin command (need global serial variable "ser")
@@ -106,6 +170,7 @@ def get_temp_press_BMP280():
     sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address = 0x76)
     
     return round(sensor.temperature, 2), round(sensor.pressure, 2)
+
 
 def main(args):
     

@@ -53,7 +53,7 @@ img {
 </head>
 
 <body>
-<h1>Milox - RASPRINTER</h1>
+<h1>RASPRINTER by Milox</h1>
 <img src="https://cdn.pixabay.com/photo/2017/04/29/05/56/rgb-2270087_960_720.png" alt="Diode" width="1000"/><br><br><br>
 
 <div class="container">
@@ -66,18 +66,18 @@ img {
 </div>
 
 <br><br><br><br><br><br>
-<p>Temperatura dyszy: {{ nozzle_temp }}°C</p>
-<p>Docelowa temperatura dyszy: {{ target_nozzle_temp }}°C</p>
-<p>Temperatura stołu: {{ bed_temp }}°C</p>
-<p>Docelowa temperatura stołu: {{ target_bed_temp }}°C</p>
-<p>Temperatura czujnika SI7021: {{ si7021_temp }}°C</p>
-<p>Wilgotność czujnika SI7021: {{ si7021_hum }}%</p>
-<p>Temperatura czujnika AHT31: {{ AHT31_temp }}°C</p>
-<p>Wilgotność czujnika AHT31: {{ AHT31_hum }}%</p>
-<p>Temperatura czujnika BMP280: {{ BMP280_temp }}°C</p>
-<p>Ciśnienie czujnika BMP280: {{ BMP280_press }}hPa</p>
+<p>Printhead temperature: {{ nozzle_temp }}°C</p>
+<p>Printhead target temperature: {{ target_nozzle_temp }}°C</p>
+<p>Heatbed temperature: {{ bed_temp }}°C</p>
+<p>Heatbed target temperature: {{ target_bed_temp }}°C</p>
+<p>SI7021 Temperature: {{ si7021_temp }}°C</p>
+<p>SI7021 Humidty: {{ si7021_hum }}%</p>
+<p>AHT31 Temperature: {{ AHT31_temp }}°C</p>
+<p>AHT31 Humidity: {{ AHT31_hum }}%</p>
+<p>BMP280 Temperature: {{ BMP280_temp }}°C</p>
+<p>BMP280 Pressure: {{ BMP280_press }}hPa</p>
 
-<a href=\><button class="button">Odśwież</button></a>
-
+<a href=\><button class="button">Refresh</button></a>
+<a href=\TOGGLE_MONITOR><button class="button">Toggle monitor</button></a>
 </body>
 </html>
