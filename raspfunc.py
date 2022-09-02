@@ -8,6 +8,14 @@ import adafruit_bmp280
 from PIL import Image, ImageDraw, ImageFont
 import RPi.GPIO as GPIO
 
+
+#from sensor_database import MyOLED
+class OLEDStatus:
+    def __init__(self):
+        self.CurrentState = "OFF"
+        self.Text = "OFF"
+
+
 print("Initializing LEDs")
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -30,6 +38,8 @@ ser.reset_input_buffer()
 print("Initializing I2C Bus")
 i2c = busio.I2C(board.SCL, board.SDA)
 oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=0x3C)
+
+MyOLED = OLEDStatus()
 
 print("OK")
 
@@ -55,12 +65,22 @@ def set_LED(LED_Color: str, LED_Status):
             GPIO.output(26, 0)
 
 
-def show_status_OK():
+def status_OLED(state):
+    if state == "ON" and MyOLED.CurrentState != "ON":
+        MyOLED.Text = "Monitor is ON"
+        MyOLED.CurrentState = "ON"
+        print_OLED(MyOLED.Text)
+    elif state == "OFF" and MyOLED.CurrentState != "OFF":
+        MyOLED.Text = "Monitor is OFF"
+        MyOLED.CurrentState = "OFF"
+        print_OLED(MyOLED.Text)
+        
+def print_OLED(text):
+    
     # Clear display.
     oled.fill(0)
     oled.show()
 
-  
     # Create blank image for drawing.
     # Make sure to create image with mode '1' for 1-bit color.
     image = Image.new("1", (oled.width, oled.height))
@@ -72,7 +92,7 @@ def show_status_OK():
     font = ImageFont.load_default()
     
     # Draw Some Text
-    text = "OK"
+    #text = "OK"
     (font_width, font_height) = font.getsize(text)
     draw.text(
         (oled.width // 2 - font_width // 2, oled.height // 2 - font_height // 2),
