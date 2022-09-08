@@ -104,7 +104,31 @@ def print_OLED(text):
     # Display image
     oled.image(image)
     oled.show()
+
+def emergency_stop_M112():
+    # uses M112 marlin command
+    # Used for emergency stopping, M112 shuts down the machine, 
+    # turns off all the steppers and heaters. 
+    # A reset is required to return to operational mode.
     
+    ser.write(b"M112\n")
+    print("Used command <M112>")
+
+def play_tone_M300(duration: int, frequency: int):
+    # uses M300 marlin command
+    # Play tone - require speaker to playtones - not just beeps
+    # need beep duration and frequency parameters
+    
+    #command = "M300 "+"S" + str(duration) + " P" + str(frequency) + "\n"
+    ser.write(("M300 "+"S" + str(duration) + " P" + str(frequency) + "\n").encode())
+    print("Used command <M300>")
+
+def auto_home_G28():
+    # uses G28 marlin command
+    # Auto home all axes
+    ser.write(b"G28\n")
+    print("Used command <G28>")
+
 
 def get_temp_M105():
     # uses M105 marlin command (need global serial variable "ser")
@@ -115,7 +139,7 @@ def get_temp_M105():
     # destination printbed temperature
 
     ser.write(b"M105\n")
-    print("uzyto polecenia <M105>")
+    print("Used command <M105>")
     time.sleep(0.1)
   
     head_curr_temp = 0

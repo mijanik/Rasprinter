@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for
-#from raspfunc import get_temp_M105, get_temp_hum_SI7021, get_temp_hum_AHT31, get_temp_press_BMP280, set_LED
+from raspfunc import emergency_stop_M112
 from sensor_database import *
 import threading
 from monitor import MainMonitor
@@ -8,10 +8,6 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    #hct, hdt, bct, bdt = get_temp_M105()
-    #t1, h1 = get_temp_hum_SI7021()
-    #t2, h2 = get_temp_hum_AHT31()
-    #t3, p3 = get_temp_press_BMP280()
     if MySensors.MonitorRunningFlag == 0:
         MySensors.ReadSensors()
     
@@ -29,6 +25,11 @@ def index():
 def toggle_monitor():
     print(MySensors.MonitorRunningFlag)
     MySensors.MonitorRunningFlag ^= 1
+    return redirect(url_for('index'))
+
+@app.route('/EMERGENCY_STOP')
+def emergency_stop():
+    emergency_stop_M112()
     return redirect(url_for('index'))
 
 @app.route('/favicon.ico')
