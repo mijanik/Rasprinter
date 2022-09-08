@@ -112,21 +112,28 @@ def emergency_stop_M112():
     # A reset is required to return to operational mode.
     
     ser.write(b"M112\n")
+    time.sleep(0.1)
     print("Used command <M112>")
 
-def play_tone_M300(duration: int, frequency: int):
+def play_tone_M300():
     # uses M300 marlin command
     # Play tone - require speaker to playtones - not just beeps
     # need beep duration and frequency parameters
     
     #command = "M300 "+"S" + str(duration) + " P" + str(frequency) + "\n"
-    ser.write(("M300 "+"S" + str(duration) + " P" + str(frequency) + "\n").encode())
-    print("Used command <M300>")
+    ser.write(b"M300\n")
+    time.sleep(1)
+    while ser.in_waiting < 2:
+        time.sleep(0.01)
+    line = ser.readline().decode('utf-8').rstrip()
+    if line == "ok":
+        print("Used command <M300>")
 
 def auto_home_G28():
     # uses G28 marlin command
     # Auto home all axes
     ser.write(b"G28\n")
+    time.sleep(0.1)
     print("Used command <G28>")
 
 
@@ -149,7 +156,8 @@ def get_temp_M105():
   
     if ser.in_waiting > 0:
         line = ser.readline().decode('utf-8').rstrip()
-
+        print(line)
+        
         result = re.search('ok T:(.*?) /', line)
         head_curr_temp = result.group(1)
         

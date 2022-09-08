@@ -1,8 +1,9 @@
 from flask import Flask, render_template, redirect, url_for
-from raspfunc import emergency_stop_M112
+from raspfunc import emergency_stop_M112, play_tone_M300
 from sensor_database import *
 import threading
 from monitor import MainMonitor
+import time
 
 app = Flask(__name__)
 
@@ -30,6 +31,11 @@ def toggle_monitor():
 @app.route('/EMERGENCY_STOP')
 def emergency_stop():
     emergency_stop_M112()
+    return redirect(url_for('index'))
+
+@app.route('/BEEP')
+def beep():
+    play_tone_M300()
     return redirect(url_for('index'))
 
 @app.route('/favicon.ico')

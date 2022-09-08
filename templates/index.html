@@ -11,7 +11,7 @@ button {
 	text-decoration: none;
 	outline: none;
 	color: #fff;
-	background-color: #4CAF50;
+	background-color: #c4c4c4;
 	border: none;
 	border-radius: 15px;
 	box-shadow: 0 9px #999;
@@ -30,7 +30,7 @@ img {
 	display: block;
 	margin-left: auto;
 	margin-right: auto;
-	max-width: 30%;
+	max-width: 100%;
 	height: auto;
 }
 
@@ -49,16 +49,35 @@ img {
   transform: translate(-50%, -50%);
 }
 
+table, th, td {
+	border: 1px solid;
+  }
+
+
+  table {
+	width: 100%;
+	border-collapse: collapse;
+  }
+
+  tbody tr:nth-child(odd) {
+	background-color: #e6e6e6;
+  }
+  
+  tbody tr:nth-child(even) {
+	background-color: #ffffff;
+  }
 </style>
 </head>
 
 <body>
 <h1>RASPRINTER by Milox</h1>
-<img src="/static/Rasprinter.png" alt="Rasprinter Logo"/><br><br><br><br><br><br><br>
 
+<img src="/static/Rasprinter.png" alt="Rasprinter Logo"/>
 <div class="container">
 	<div class="center">
-		<br><br><br><br><br><br>
+		
+		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 		<p>Printhead temperature: {{ nozzle_temp }}°C</p>
 		<p>Printhead target temperature: {{ target_nozzle_temp }}°C</p>
 		<p>Heatbed temperature: {{ bed_temp }}°C</p>
@@ -70,10 +89,61 @@ img {
 		<p>BMP280 Temperature: {{ BMP280_temp }}°C</p>
 		<p>BMP280 Pressure: {{ BMP280_press }}hPa</p>
 
+		<table>
+			<tr>
+			  	<th>Data</th>
+			  	<th>Value</th>
+			</tr>
+			<tr>
+			  	<td>Printhead temperature</td>
+			  	<td>{{ nozzle_temp }} °C</td>
+			</tr>
+			<tr>
+			  	<td>Printhead target temperature</td>
+			  	<td>{{ target_nozzle_temp }} °C</td>
+			</tr>
+			<tr>
+				<td>Heatbed temperature</td>
+				<td>{{ bed_temp }} °C</td>
+			</tr>
+			<tr>
+				<td>Heatbed target temperature</td>
+				<td>{{ target_bed_temp }} °C</td>
+			</tr>
+			<tr>
+				<td>SI7021 Temperature</td>
+				<td>{{ si7021_temp }} °C</td>
+			</tr>
+			<tr>
+				<td>SI7021 Humidty</td>
+				<td>{{ si7021_hum }} %</td>
+			</tr>
+			<tr>
+				<td>AHT31 Temperature</td>
+				<td>{{ AHT31_temp }} °C</td>
+			</tr>
+			<tr>
+				<td>AHT31 Humidty</td>
+				<td>{{ AHT31_hum }} %</td>
+			</tr>
+			<tr>
+				<td>BMP280 Temperature</td>
+				<td>{{ BMP280_temp }} °C</td>
+			</tr>
+			<tr>
+				<td>BMP280 Pressure</td>
+				<td>{{ BMP280_press }} hPa</td>
+			</tr>
+		</table>
+
+		<br><br>
 		<a href=\><button class="button">Refresh</button></a>
+		<br><br>
 		<a href=\TOGGLE_MONITOR><button class="button">Toggle monitor</button></a>
 		<br><br>
 		<a href=\EMERGENCY_STOP><button class="button">Emergency STOP</button></a>
+		<br><br>
+		<a href=\BEEP><button class="button">BEEP</button></a>
 
 		<p>Monitor status: {{ MonitorRunningFlag }}</p>
 	</div>
