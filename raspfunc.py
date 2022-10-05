@@ -156,7 +156,6 @@ def get_temp_M105():
   
     if ser.in_waiting > 0:
         line = ser.readline().decode('utf-8').rstrip()
-        print(line)
         
         result = re.search('ok T:(.*?) /', line)
         head_curr_temp = result.group(1)
