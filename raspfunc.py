@@ -281,5 +281,3 @@ def main(args):
 if __name__ == '__main__':
     import sys
     sys.exit(main(sys.argv))
-
-#ok T:22.81 /0.00 B:22.66 /0.00 @:0 B@:0

@@ -28,17 +28,34 @@ MySensors = SensorDatabase()
 
 class DataBuffer:
     def __init__(self):
-        rows = 7 #7 temperature sensors
-        columns = 20
-        data = np.zeros([rows, columns])
-
+        #7 sensors - 7 arrays
+        PrintheadCurrentTemp = np.zeros(20)
+        PrintheadTargetTemp = np.zeros(20)
+        PrintbedCurrentTemp = np.zeros(20)
+        PrintbedTargetTemp = np.zeros(20)
+        SI7021Temp = np.zeros(20)
+        AHT31Temp = np.zeros(20)
+        BMP280Temp = np.zeros(20)
+        
+        values = np.arange(20)
+        
     def UpdateData(self):
-        self.data[0, 0] = MySensors.PrintheadCurrentTemp
-        self.data[1, 0] = MySensors.PrintheadTargetTemp
-        self.data[1, 0] = MySensors.PrintheadTargetTemp
-        self.data[1, 0] = MySensors.PrintheadTargetTemp
-        self.data[1, 0] = MySensors.PrintheadTargetTemp
-        self.data[1, 0] = MySensors.PrintheadTargetTemp
-        self.data[1, 0] = MySensors.PrintheadTargetTemp
+        #shift to right measurements
+        self.PrintheadCurrentTemp = np.roll(self.PrintheadCurrentTemp, 1)
+        self.PrintheadTargetTemp = np.roll(self.PrintheadTargetTemp, 1)
+        self.PrintbedCurrentTemp = np.roll(self.PrintbedCurrentTemp, 1)
+        self.PrintbedTargetTemp = np.roll(self.PrintbedTargetTemp, 1) 
+        self.SI7021Temp = np.roll(self.SI7021Temp, 1) 
+        self.AHT31Temp = np.roll(self.AHT31Temp, 1)
+        self.BMP280Temp = np.roll(self.BMP280Temp, 1) 
+        
+        #overwrite first element
+        self.PrintheadCurrentTemp[0] = MySensors.PrintheadCurrentTemp
+        self.PrintheadTargetTemp[0] = MySensors.PrintheadTargetTemp
+        self.PrintbedCurrentTemp[0] = MySensors.PrintbedCurrentTemp
+        self.PrintbedTargetTemp[0] = MySensors.PrintbedTargetTemp
+        self.SI7021Temp[0] = MySensors.SI7021Temp
+        self.AHT31Temp[0] = MySensors.AHT31Temp
+        self.BMP280Temp[0] = MySensors.BMP280Temp
             
 

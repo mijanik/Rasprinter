@@ -3,9 +3,10 @@
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 <style>
 button {
+	margin: auto;
 	display: inline-block;
-	padding: 15px 25px;
-	font-size: 24px;
+	padding: 15px 15px;
+	font-size: 20px;
 	cursor: pointer;
 	text-align: center;
 	text-decoration: none;
@@ -28,30 +29,33 @@ button:active {
 
 img {
 	display: block;
-	margin-left: auto;
+	margin-left: 70px;
 	margin-right: auto;
 	max-width: 100%;
 	height: auto;
 }
 
 
-.container {
-  height: 100px;
-  position: relative;
-}
+.center_panel {
+	margin-left: 20px;
+	margin-right: auto;
+	width: 40%;
+	max-width: 300px;
+	border: 2px solid black;
+	padding: 20px;
+	float:left;
+	}
 
-.center {
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
+.center_chart {
+	width: 55%;
+	float:left;
+	max-width: 1250px;
+	border: 2px solid black;
+	}
 
 table, th, td {
 	border: 1px solid;
-  }
+ 	}
 
 
   table {
@@ -69,82 +73,120 @@ table, th, td {
 </style>
 </head>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
 <body>
 <h1>RASPRINTER by Milox</h1>
 
 <img src="/static/Rasprinter.png" alt="Rasprinter Logo"/>
-<div class="container">
-	<div class="center">
+
+
+
+
+
+<div class="center_panel">
+	
+	<table>
+		<tr>
+			<th>Data</th>
+			<th>Value</th>
+		</tr>
+		<tr>
+			<td>Printhead temperature</td>
+			<td>{{ nozzle_temp }} °C</td>
+		</tr>
+		<tr>
+			<td>Printhead target temperature</td>
+			<td>{{ target_nozzle_temp }} °C</td>
+		</tr>
+		<tr>
+			<td>Heatbed temperature</td>
+			<td>{{ bed_temp }} °C</td>
+		</tr>
+		<tr>
+			<td>Heatbed target temperature</td>
+			<td>{{ target_bed_temp }} °C</td>
+		</tr>
+		<tr>
+			<td>SI7021 Temperature</td>
+			<td>{{ si7021_temp }} °C</td>
+		</tr>
+		<tr>
+			<td>SI7021 Humidty</td>
+			<td>{{ si7021_hum }} %</td>
+		</tr>
+		<tr>
+			<td>AHT31 Temperature</td>
+			<td>{{ AHT31_temp }} °C</td>
+		</tr>
+		<tr>
+			<td>AHT31 Humidty</td>
+			<td>{{ AHT31_hum }} %</td>
+		</tr>
+		<tr>
+			<td>BMP280 Temperature</td>
+			<td>{{ BMP280_temp }} °C</td>
+		</tr>
+		<tr>
+			<td>BMP280 Pressure</td>
+			<td>{{ BMP280_press }} hPa</td>
+		</tr>
+	</table>
+
+	<br><br>
+	<a href=\><button class="button">Refresh</button></a>
+
+	<br><br>
+	<a href=\TOGGLE_MONITOR><button class="button">Toggle monitor</button></a>
+
+	<br><br>
+	<p>Monitor status: {{ MonitorRunningFlag }}</p>
+	<a href=\EMERGENCY_STOP><button class="button">Emergency STOP</button></a>
+
+	<br><br>
+	<a href=\BEEP><button class="button">BEEP</button></a>
+
 		
-		<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-		<br><br><br><br><br><br><br><br><br><br>
-
-
-		<table>
-			<tr>
-			  	<th>Data</th>
-			  	<th>Value</th>
-			</tr>
-			<tr>
-			  	<td>Printhead temperature</td>
-			  	<td>{{ nozzle_temp }} °C</td>
-			</tr>
-			<tr>
-			  	<td>Printhead target temperature</td>
-			  	<td>{{ target_nozzle_temp }} °C</td>
-			</tr>
-			<tr>
-				<td>Heatbed temperature</td>
-				<td>{{ bed_temp }} °C</td>
-			</tr>
-			<tr>
-				<td>Heatbed target temperature</td>
-				<td>{{ target_bed_temp }} °C</td>
-			</tr>
-			<tr>
-				<td>SI7021 Temperature</td>
-				<td>{{ si7021_temp }} °C</td>
-			</tr>
-			<tr>
-				<td>SI7021 Humidty</td>
-				<td>{{ si7021_hum }} %</td>
-			</tr>
-			<tr>
-				<td>AHT31 Temperature</td>
-				<td>{{ AHT31_temp }} °C</td>
-			</tr>
-			<tr>
-				<td>AHT31 Humidty</td>
-				<td>{{ AHT31_hum }} %</td>
-			</tr>
-			<tr>
-				<td>BMP280 Temperature</td>
-				<td>{{ BMP280_temp }} °C</td>
-			</tr>
-			<tr>
-				<td>BMP280 Pressure</td>
-				<td>{{ BMP280_press }} hPa</td>
-			</tr>
-		</table>
-
-		<br><br>
-		<a href=\><button class="button">Refresh</button></a>
-
-		<br><br>
-		<a href=\TOGGLE_MONITOR><button class="button">Toggle monitor</button></a>
-
-		<br><br>
-		<p>Monitor status: {{ MonitorRunningFlag }}</p>
-		<a href=\EMERGENCY_STOP><button class="button">Emergency STOP</button></a>
-
-		<br><br>
-		<a href=\BEEP><button class="button">BEEP</button></a>
-
-		
-	</div>
 </div>
 
+<div class="center_chart">
+	<canvas id="myChart" style="width:100%;max-width:2000px"></canvas>
+</div>
 
+<script>
+	var xyValues = [
+	  {x:50, y:7},
+	  {x:60, y:8},
+	  {x:70, y:8},
+	  {x:80, y:9},
+	  {x:90, y:9},
+	  {x:100, y:9},
+	  {x:110, y:10},
+	  {x:120, y:11},
+	  {x:130, y:14},
+	  {x:140, y:14},
+	  {x:150, y:15}
+	];
+	
+new Chart("myChart", {
+	type: "scatter",
+	data: {
+	  datasets: [{
+		pointRadius: 4,
+		pointBackgroundColor: "rgb(0,0,255)",
+		data: xyValues
+	  }]
+	},
+	options: {
+	  legend: {display: false},
+	  scales: {
+		xAxes: [{ticks: {min: 40, max:160}}],
+		yAxes: [{ticks: {min: 6, max:16}}],
+	  }
+	}
+  });
+  </script>
+  
 
 </body>
 </html>
