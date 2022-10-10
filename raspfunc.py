@@ -20,9 +20,11 @@ print("Initializing LEDs")
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
+GPIO.setup(12, GPIO.OUT)
 GPIO.setup(13, GPIO.OUT)
 GPIO.setup(19, GPIO.OUT)
 GPIO.setup(26, GPIO.OUT)
+GPIO.output(12, 0)
 GPIO.output(13, 0)
 GPIO.output(19, 0)
 GPIO.output(26, 0)
@@ -43,11 +45,19 @@ MyOLED = OLEDStatus()
 
 print("OK")
 
+def set_relay(RelayStatus: str):
+    #ON or OFF
+    if RelayStatus == "ON":
+        GPIO.output(12, 1)
+    elif RelayStatus == "OFF":
+        GPIO.output(12, 0)
+    else:
+        print("set_relay - Invalid Parameter!")
 
-#RED or GREEN or BLUE
-#ON or OFF
 def set_LED(LED_Color: str, LED_Status):
-
+    #RED or GREEN or BLUE
+    #ON or OFF
+    
     if LED_Color == 'RED':
         if LED_Status == 'ON' or LED_Status == 1:
             GPIO.output(13, 1)

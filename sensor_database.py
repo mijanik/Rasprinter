@@ -29,15 +29,15 @@ MySensors = SensorDatabase()
 class DataBuffer:
     def __init__(self):
         #7 sensors - 7 arrays
-        PrintheadCurrentTemp = np.zeros(20)
-        PrintheadTargetTemp = np.zeros(20)
-        PrintbedCurrentTemp = np.zeros(20)
-        PrintbedTargetTemp = np.zeros(20)
-        SI7021Temp = np.zeros(20)
-        AHT31Temp = np.zeros(20)
-        BMP280Temp = np.zeros(20)
+        self.PrintheadCurrentTemp = np.zeros(20)
+        self.PrintheadTargetTemp = np.zeros(20)
+        self.PrintbedCurrentTemp = np.zeros(20)
+        self.PrintbedTargetTemp = np.zeros(20)
+        self.SI7021Temp = np.zeros(20)
+        self.AHT31Temp = np.zeros(20)
+        self.BMP280Temp = np.zeros(20)
         
-        values = np.arange(20)
+        self.labels = np.arange(20)
         
     def UpdateData(self):
         #shift to right measurements
@@ -58,4 +58,7 @@ class DataBuffer:
         self.AHT31Temp[0] = MySensors.AHT31Temp
         self.BMP280Temp[0] = MySensors.BMP280Temp
             
+MyData = DataBuffer()
 
+if __name__ == '__main__':
+    pass

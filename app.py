@@ -19,7 +19,9 @@ def index():
                            si7021_temp = MySensors.SI7021Temp, si7021_hum = MySensors.SI7021Hum, 
                            AHT31_temp = MySensors.AHT31Temp, AHT31_hum = MySensors.AHT31Hum, 
                            BMP280_temp = MySensors.BMP280Temp, BMP280_press = MySensors.BMP280Pres, 
-                           MonitorRunningFlag = MySensors.MonitorRunningFlag)
+                           MonitorRunningFlag = MySensors.MonitorRunningFlag,
+                           labels = MyData.labels,
+                           PrintheadCurrentTempData = MyData.PrintheadCurrentTemp)
 
 
 @app.route('/TOGGLE_MONITOR')
