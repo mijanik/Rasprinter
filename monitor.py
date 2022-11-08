@@ -58,6 +58,7 @@ def MainMonitor():
             
                 MySensors.ReadSensors()
                 TemperatureStatus = CheckTemperaturesAbnormal()
+                MyData.UpdateData()
             
             if TemperatureStatus != 0:
                 play_tone_M300()

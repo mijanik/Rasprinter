@@ -1,203 +1,95 @@
 <html>
-<head>
-	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-<style>
-button {
-	margin: auto;
-	display: inline-block;
-	padding: 15px 15px;
-	font-size: 20px;
-	cursor: pointer;
-	text-align: center;
-	text-decoration: none;
-	outline: none;
-	color: #fff;
-	background-color: #c4c4c4;
-	border: none;
-	border-radius: 15px;
-	box-shadow: 0 9px #999;
-}
-
-button:hover {background-color: #3e8e41}
-
-button:active {
-	background-color: #3e8e41;
-	box-shadow: 0 5px #666;
-	transform: translateY(4px);
-}
-
-
-img {
-	display: block;
-	margin-left: 70px;
-	margin-right: auto;
-	max-width: 100%;
-	height: auto;
-}
-
-
-.center_panel {
-	margin-left: 20px;
-	margin-right: auto;
-	width: 40%;
-	max-width: 300px;
-	border: 2px solid black;
-	padding: 20px;
-	float:left;
-	}
-
-.center_chart {
-	width: 55%;
-	float:left;
-	max-width: 1250px;
-	}
-
-table, th, td {
-	border: 1px solid;
- 	}
-
-
-  table {
-	width: 100%;
-	border-collapse: collapse;
-  }
-
-  tbody tr:nth-child(odd) {
-	background-color: #e6e6e6;
-  }
-  
-  tbody tr:nth-child(even) {
-	background-color: #ffffff;
-  }
-</style>
-</head>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-
-<body>
-<h1>RASPRINTER by Milox</h1>
-
-<img src="/static/Rasprinter.png" alt="Rasprinter Logo"/>
-
-
-
-
-
-<div class="center_panel">
+	<head>
 	
-	<table>
-		<tr>
-			<th>Data</th>
-			<th>Value</th>
-		</tr>
-		<tr>
-			<td>Printhead temperature</td>
-			<td>{{ nozzle_temp }} °C</td>
-		</tr>
-		<tr>
-			<td>Printhead target temperature</td>
-			<td>{{ target_nozzle_temp }} °C</td>
-		</tr>
-		<tr>
-			<td>Heatbed temperature</td>
-			<td>{{ bed_temp }} °C</td>
-		</tr>
-		<tr>
-			<td>Heatbed target temperature</td>
-			<td>{{ target_bed_temp }} °C</td>
-		</tr>
-		<tr>
-			<td>SI7021 Temperature</td>
-			<td>{{ si7021_temp }} °C</td>
-		</tr>
-		<tr>
-			<td>SI7021 Humidty</td>
-			<td>{{ si7021_hum }} %</td>
-		</tr>
-		<tr>
-			<td>AHT31 Temperature</td>
-			<td>{{ AHT31_temp }} °C</td>
-		</tr>
-		<tr>
-			<td>AHT31 Humidty</td>
-			<td>{{ AHT31_hum }} %</td>
-		</tr>
-		<tr>
-			<td>BMP280 Temperature</td>
-			<td>{{ BMP280_temp }} °C</td>
-		</tr>
-		<tr>
-			<td>BMP280 Pressure</td>
-			<td>{{ BMP280_press }} hPa</td>
-		</tr>
-	</table>
+		{{ turbo() }}
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 
-	<br><br>
-	<a href=\><button class="button">Refresh</button></a>
+		<style>
+			button {
+				margin: auto;
+				display: inline-block;
+				padding: 15px 15px;
+				font-size: 20px;
+				cursor: pointer;
+				text-align: center;
+				text-decoration: none;
+				outline: none;
+				color: #fff;
+				background-color: #c4c4c4;
+				border: none;
+				border-radius: 15px;
+				box-shadow: 0 9px #999;
+			}
 
-	<br><br>
-	<a href=\TOGGLE_MONITOR><button class="button">Toggle monitor</button></a>
+			button:hover {background-color: #3e8e41}
 
-	<br><br>
-	<p>Monitor status: {{ MonitorRunningFlag }}</p>
-	<a href=\EMERGENCY_STOP><button class="button">Emergency STOP</button></a>
+			button:active {
+				background-color: #3e8e41;
+				box-shadow: 0 5px #666;
+				transform: translateY(4px);
+			}
 
-	<br><br>
-	<a href=\BEEP><button class="button">BEEP</button></a>
 
-		
-</div>
+			img {
+				display: block;
+				margin-left: 70px;
+				margin-right: auto;
+				max-width: 100%;
+				height: auto;
+			}
 
-<div class="center_chart">
-	<canvas id="myChart" style="width:100%;max-width:700px"></canvas>
-</div>
 
-<script>
-	// Global parameters:
-	// do not resize the chart canvas when its container does (keep at 600x400px)
-	Chart.defaults.global.responsive = false;
-	
-	// define the chart data
-	var chartData = {
-		labels : [{% for item in labels %}
-			"{{item}}",
-			{% endfor %}],
-		datasets : [{
-			label: 'Printhead Temperature',
-			fill: true,
-			lineTension: 0.1,
-			backgroundColor: "rgba(75,192,192,0.4)",
-			borderColor: "rgba(75,192,192,1)",
-			borderCapStyle: 'butt',
-			borderDash: [],
-			borderDashOffset: 0.0,
-			borderJoinStyle: 'miter',
-			pointBorderColor: "rgba(75,192,192,1)",
-			pointBackgroundColor: "#fff",
-			pointBorderWidth: 1,
-			pointHoverRadius: 5,
-			pointHoverBackgroundColor: "rgba(75,192,192,1)",
-			pointHoverBorderColor: "rgba(220,220,220,1)",
-			pointHoverBorderWidth: 2,
-			pointRadius: 1,
-			pointHitRadius: 10,
-			data : [{% for item in PrintheadCurrentTempData %}
-				{{item}},
-				{% endfor %}],
-			spanGaps: false
-		}]
-	}
-	
-	// get chart canvas
-	var ctx = document.getElementById("myChart").getContext("2d");
-	
-	// create the chart using the chart canvas
-	var myChart = new Chart(ctx, {
-		type: 'line',
-		data: chartData,
-	});
-</script>
-  
+			.center_panel {
+				margin-left: 20px;
+				margin-right: auto;
+				width: 40%;
+				max-width: 300px;
+				border: 2px solid black;
+				padding: 20px;
+				float:left;
+				}
 
-</body>
+			.center_chart {
+				width: 55%;
+				float:left;
+				max-width: 1250px;
+				}
+
+			table, th, td {
+				border: 1px solid;
+				}
+
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+
+			tbody tr:nth-child(odd) {
+				background-color: #e6e6e6;
+			}
+			
+			tbody tr:nth-child(even) {
+				background-color: #ffffff;
+			}
+		</style>
+	</head>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
+	<body>
+		<h1>RASPRINTER by Milox</h1>
+
+		<img src="/static/Rasprinter.png" alt="Rasprinter Logo"/>
+
+		{% include "panel.html" %}
+		{% include "chart.html" %}
+
+
+		<br>
+		<div id="video" class="video">
+			<img src="{{ url_for('video_feed') }}" style="width:100%;max-width:700px">
+		</div>
+
+	</body>
 </html>
