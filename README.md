@@ -16,6 +16,6 @@
 - Autonomous temperature monitoring - if they are not safe, printer will be shut down
 - Show temperatures and camera preview on web page
 ###### About project
-Developer and owner: Miłosz Janik
-Made for Diploma Engineering Thesis - Bachelor degree - "System monitorowania parametrów pracy drukarki 3D"
-Thesis promoter: PhD Agnieszka Dąbrowska-Boruch
+- Developer and owner: Miłosz Janik
+- Made for Diploma Engineering Thesis - Bachelor degree - "System monitorowania parametrów pracy drukarki 3D"
+- Thesis promoter: PhD Agnieszka Dąbrowska-Boruch
