@@ -1,6 +1,7 @@
 # RASPRINTER
 ## Under development by Miłosz Janik
 ## **Sharing, copying full or a part of project is strictly prohibited**
+Google Slides - project description (31.10.2022) https://docs.google.com/presentation/d/1w7VxQLNavUgkZQrJ2IbT4koUca9OFTzJjdb9SjkVRik/edit?usp=sharing
 ###### Project purpose
 - To monitor 3D printer parameters for safety reasons
 ###### Project physical components
