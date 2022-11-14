@@ -20,3 +20,4 @@ Google Slides - project description (31.10.2022) https://docs.google.com/present
 - Developer and owner: Miłosz Janik
 - Made for Diploma Engineering Thesis - Bachelor degree - "System monitorowania parametrów pracy drukarki 3D"
 - Thesis promoter: PhD Agnieszka Dąbrowska-Boruch
+- Field of study: Electronics and Telecommunications
