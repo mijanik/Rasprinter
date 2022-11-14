@@ -31,7 +31,6 @@ def MainMonitor():
     
     BlinkSecondsTimestamp = 0.0
     LEDStatus = 0
-    OLEDRoationFlag = 0
     set_LED('GREEN', 'ON')
     print_OLED("Hello!")
     

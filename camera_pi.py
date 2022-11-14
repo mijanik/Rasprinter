@@ -3,7 +3,7 @@ import io
 import threading
 import picamera
 
-# Kod użytkownika Mjrovai
+# Code source - Mjrovai:
 # https://github.com/Mjrovai/Video-Streaming-with-Flask/tree/master/camWebServer
 
 class Camera(object):
