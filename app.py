@@ -1,6 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, Response
-from raspfunc import emergency_stop_M112, play_tone_M300
-from sensor_database import *
+from raspfunc import emergency_stop_M112, play_tone_M300, init_IO
+from sensor_database import MySensors, MyData
 import threading
 from monitor import MainMonitor
 from camera_pi import Camera, gen
@@ -33,7 +33,7 @@ def index():
 def update_load():
     with app.app_context():
         while True:
-            time.sleep(1)
+            time.sleep(5)
             turbo.push(turbo.replace(render_template('panel.html', nozzle_temp=MySensors.PrintheadCurrentTemp, 
                            target_nozzle_temp=MySensors.PrintheadTargetTemp, 
                            bed_temp = MySensors.PrintbedCurrentTemp, 
@@ -47,14 +47,19 @@ def update_load():
                            PrintheadCurrentTempData = MyData.PrintheadCurrentTemp,
                            PrintbedCurrentTempData = MyData.PrintbedCurrentTemp,
                            PrintheadTargetTempData = MyData.PrintheadTargetTemp,
-                           PrintbedTargetTempData = MyData.PrintbedTargetTemp), 'center_chart'))
+                           PrintbedTargetTempData = MyData.PrintbedTargetTemp,
+                           SI7021TempData = MyData.SI7021Temp,
+                           AHT31TempData = MyData.AHT31Temp,
+                           BMP280TempData = MyData.BMP280Temp), 'center_chart'))
 
 @app.before_first_request
 def before_first_request():
+    print("Started Flask Thread")
+    init_IO()
+    threading.Thread(target=MainMonitor).start()
+    print("Started Monitor")
     threading.Thread(target=update_load).start()
-    
-
-
+    print("Started TurboFlask")
 
 @app.route('/TOGGLE_MONITOR')
 def toggle_monitor():
@@ -82,9 +87,5 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
-    app.config['SERVER_NAME'] = "192.168.100.76:5000"
-
     threading.Thread(target=lambda: app.run(host='192.168.100.76', port=5000, debug=True, use_reloader=False)).start()
-    print("Started Flask Thread")
-    threading.Thread(target=MainMonitor).start()
-    print("Started Monitor")
+    

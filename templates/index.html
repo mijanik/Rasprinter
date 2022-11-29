@@ -15,16 +15,17 @@
 				text-decoration: none;
 				outline: none;
 				color: #fff;
-				background-color: #c4c4c4;
+				background-color: #f18eb5;
 				border: none;
 				border-radius: 15px;
 				box-shadow: 0 9px #999;
+				width: 300px
 			}
 
-			button:hover {background-color: #3e8e41}
+			button:hover {background-color: #d11a63}
 
 			button:active {
-				background-color: #3e8e41;
+				background-color: #d11a63;
 				box-shadow: 0 5px #666;
 				transform: translateY(4px);
 			}
@@ -36,6 +37,7 @@
 				margin-right: auto;
 				max-width: 100%;
 				height: auto;
+				float:left;
 			}
 
 
@@ -47,12 +49,21 @@
 				border: 2px solid black;
 				padding: 20px;
 				float:left;
+				clear: left
 				}
 
 			.center_chart {
 				width: 55%;
 				float:left;
 				max-width: 1250px;
+				padding: 20px;
+				}
+
+
+			.video {
+				float:left;
+				width: 55%;
+				max-width: 1280px
 				}
 
 			table, th, td {
@@ -72,24 +83,39 @@
 			tbody tr:nth-child(even) {
 				background-color: #ffffff;
 			}
+
+			
+			.footer {
+				position: fixed;
+				left: 0;
+				bottom: 0;
+				width: 100%;
+				background-color: #d11a63;
+				color: white;
+				text-align: center;
+			}
+			
+
 		</style>
 	</head>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
 	<body>
-		<h1>RASPRINTER by Milox</h1>
 
 		<img src="/static/Rasprinter.png" alt="Rasprinter Logo"/>
+		<div id="video" class="video">
+			<img src="{{ url_for('video_feed') }}" style="width:100%;max-width:700px">
+		</div>
 
 		{% include "panel.html" %}
 		{% include "chart.html" %}
 
 
-		<br>
-		<div id="video" class="video">
-			<img src="{{ url_for('video_feed') }}" style="width:100%;max-width:700px">
-		</div>
+
+		<div class="footer">
+			<p style="font-family: Courier New">RASPRINTER by Miłosz Janik</p>
+		  </div>
 
 	</body>
 </html>

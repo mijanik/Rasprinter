@@ -1,4 +1,4 @@
-from sensor_database import *
+from sensor_database import MySensors, MyData, SensorErrorCode
 import time
 from raspfunc import set_LED, status_OLED, print_OLED, play_tone_M300, set_relay
 
@@ -6,43 +6,36 @@ def CheckTemperaturesAbnormal():
     #Check every temperature sensor if its value is safe
     #returns 0 if OK
     
-    if MySensors.PrintheadCurrentTemp > 250:
-        return 1
+    if MySensors.PrintheadCurrentTemp > 260:
+        return SensorErrorCode['PrintheadCurrentTemp'].value
     
     elif MySensors.PrintbedCurrentTemp > 100:
-        return 2
+        return SensorErrorCode['PrintbedCurrentTemp'].value
     
     elif MySensors.SI7021Temp > 50:
-        return 3
+        return SensorErrorCode['SI7021Temp'].value
     
     elif MySensors.AHT31Temp > 50:
-        return 4
+        return SensorErrorCode['AHT31Temp'].value
     
     elif MySensors.BMP280Temp > 50:
-        return 5
+        return SensorErrorCode['BMP280Temp'].value
     
     else:
-        return 0
-    
-    pass
+        return 0 # All sensors OK
 
 
 def MainMonitor():
     
     BlinkSecondsTimestamp = 0.0
     LEDStatus = 0
-    OLEDRoationFlag = 0
+    TemperatureStatus = 0
+    
     set_LED('GREEN', 'ON')
     print_OLED("Hello!")
     
-    TemperatureStatus = 0
-    
-    set_relay("ON")
-    time.sleep(2)
-    set_relay("OFF")
-    
     #Monitoring loop
-    while 1:
+    while True:
         
         #If monitor is turned ON
         if MySensors.MonitorRunningFlag == 1:
@@ -62,13 +55,7 @@ def MainMonitor():
             
             if TemperatureStatus != 0:
                 play_tone_M300()
-                
+                set_relay("ON")
         
         elif MySensors.MonitorRunningFlag == 0:
             status_OLED("OFF")
-            
-            
-
-    
-if __name__ == "__main__":
-    pass

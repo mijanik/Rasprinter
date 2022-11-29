@@ -8,45 +8,58 @@ import adafruit_bmp280
 from PIL import Image, ImageDraw, ImageFont
 import RPi.GPIO as GPIO
 
+ser = None
+i2c = None
+oled = None
+MyOlED = None
 
-#from sensor_database import MyOLED
+def init_IO():
+    print("Initializing GPIO")
+    global GPIO
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+
+    GPIO.setup(12, GPIO.OUT)
+    GPIO.setup(13, GPIO.OUT)
+    GPIO.setup(19, GPIO.OUT)
+    GPIO.setup(26, GPIO.OUT)
+    GPIO.output(12, 0)
+    GPIO.output(13, 0)
+    GPIO.output(19, 0)
+    GPIO.output(26, 0)
+
+    GPIO.output(12, 1) # Turn on Printer Relay
+    time.sleep(10)     # Wait for printer to start
+    
+    print("Initializing serial connection to printer at /dev/ttyACM0, baudrate 115200")
+    global ser 
+    try:    
+        ser = serial.Serial(port='/dev/ttyACM0', baudrate = 115200, timeout=1)
+        ser.reset_input_buffer()
+    except Exception as e:
+        print(f"An error occurred while initializing serial connection to printer: {e}")
+    
+    print("Initializing I2C Bus")
+    global i2c 
+    i2c = busio.I2C(board.SCL, board.SDA)
+    
+    print("Initializing OLED")
+    global oled
+    oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=0x3C)
+    global MyOLED
+    MyOLED = OLEDStatus()
+
+    print("OK")
+
 class OLEDStatus:
     def __init__(self):
         self.CurrentState = "OFF"
         self.Text = "OFF"
 
-
-print("Initializing LEDs")
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-
-GPIO.setup(12, GPIO.OUT)
-GPIO.setup(13, GPIO.OUT)
-GPIO.setup(19, GPIO.OUT)
-GPIO.setup(26, GPIO.OUT)
-GPIO.output(12, 0)
-GPIO.output(13, 0)
-GPIO.output(19, 0)
-GPIO.output(26, 0)
-
-print("Initializing serial connection to printer at /dev/ttyACM0, 115200")
-ser = serial.Serial(
-    port='/dev/ttyACM0',
-    baudrate = 115200,
-    timeout=1
-)
-ser.reset_input_buffer()
-
-print("Initializing I2C Bus")
-i2c = busio.I2C(board.SCL, board.SDA)
-oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=0x3C)
-
-MyOLED = OLEDStatus()
-
-print("OK")
-
 def set_relay(RelayStatus: str):
-    #ON or OFF
+    # ON or OFF
+    
+    global GPIO
     if RelayStatus == "ON":
         GPIO.output(12, 1)
     elif RelayStatus == "OFF":
@@ -55,9 +68,11 @@ def set_relay(RelayStatus: str):
         print("set_relay - Invalid Parameter!")
 
 def set_LED(LED_Color: str, LED_Status):
-    #RED or GREEN or BLUE
-    #ON or OFF
+    # Sets Color 
+    # RED or GREEN or BLUE
+    # ON or OFF
     
+    global GPIO
     if LED_Color == 'RED':
         if LED_Status == 'ON' or LED_Status == 1:
             GPIO.output(13, 1)
@@ -76,6 +91,8 @@ def set_LED(LED_Color: str, LED_Status):
 
 
 def status_OLED(state):
+    # Shows Monitor status on OLED display
+    
     if state == "ON" and MyOLED.CurrentState != "ON":
         MyOLED.Text = "Monitor is ON"
         MyOLED.CurrentState = "ON"
@@ -86,23 +103,15 @@ def status_OLED(state):
         print_OLED(MyOLED.Text)
         
 def print_OLED(text):
+    # Shows standard text on OLED display
     
-    # Clear display.
     oled.fill(0)
     oled.show()
 
-    # Create blank image for drawing.
-    # Make sure to create image with mode '1' for 1-bit color.
     image = Image.new("1", (oled.width, oled.height))
-    
-    # Get drawing object to draw on image.
     draw = ImageDraw.Draw(image)
-    
-    # Load default font.
     font = ImageFont.load_default()
     
-    # Draw Some Text
-    #text = "OK"
     (font_width, font_height) = font.getsize(text)
     draw.text(
         (oled.width // 2 - font_width // 2, oled.height // 2 - font_height // 2),
@@ -111,7 +120,6 @@ def print_OLED(text):
         fill=255,
     )
     
-    # Display image
     oled.image(image)
     oled.show()
 
@@ -121,16 +129,21 @@ def emergency_stop_M112():
     # turns off all the steppers and heaters. 
     # A reset is required to return to operational mode.
     
-    ser.write(b"M112\n")
-    time.sleep(0.1)
-    print("Used command <M112>")
+    global ser
+    
+    try:
+        ser.write(b"M112\n")
+        time.sleep(0.1)
+        print("Used command <M112>")
+    except Exception as e:
+        print(f"An error occurred while sending M112 Emergency Stop: {e}")
 
 def play_tone_M300():
     # uses M300 marlin command
     # Play tone - require speaker to playtones - not just beeps
     # need beep duration and frequency parameters
     
-    #command = "M300 "+"S" + str(duration) + " P" + str(frequency) + "\n"
+    global ser
     ser.write(b"M300\n")
     time.sleep(1)
     while ser.in_waiting < 2:
@@ -138,14 +151,6 @@ def play_tone_M300():
     line = ser.readline().decode('utf-8').rstrip()
     if line == "ok":
         print("Used command <M300>")
-
-def auto_home_G28():
-    # uses G28 marlin command
-    # Auto home all axes
-    ser.write(b"G28\n")
-    time.sleep(0.1)
-    print("Used command <G28>")
-
 
 def get_temp_M105():
     # uses M105 marlin command (need global serial variable "ser")
@@ -155,29 +160,36 @@ def get_temp_M105():
     # current printbed temperature
     # destination printbed temperature
 
-    ser.write(b"M105\n")
-    print("Used command <M105>")
-    time.sleep(0.1)
-  
+    global ser
     head_curr_temp = 0
     head_dest_temp = 0
     bed_curr_temp = 0
     bed_dest_temp = 0
-  
-    if ser.in_waiting > 0:
-        line = ser.readline().decode('utf-8').rstrip()
-        
-        result = re.search('ok T:(.*?) /', line)
-        head_curr_temp = result.group(1)
-        
-        result = re.search(' /(.*?) B:', line)
-        head_dest_temp = result.group(1)
 
-        result = re.search(' B:(.*?) /', line)
-        bed_curr_temp = result.group(1)
+    try:
+        ser.write(b"M105\n")
+        print("Used command <M105>")
+        time.sleep(0.1)
+    except Exception as e:
+        print(f"An error occurred while sending M105 command: {e}")
+    
+    try:
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8').rstrip()
+            
+            result = re.search('ok T:(.*?) /', line)
+            head_curr_temp = result.group(1)
+            
+            result = re.search(' /(.*?) B:', line)
+            head_dest_temp = result.group(1)
 
-        result = re.search(' B:(.*?) @:', line)
-        bed_dest_temp = result.group(1).split("/", 1)[1]
+            result = re.search(' B:(.*?) /', line)
+            bed_curr_temp = result.group(1)
+
+            result = re.search(' B:(.*?) @:', line)
+            bed_dest_temp = result.group(1).split("/", 1)[1]
+    except Exception as e:
+        print(f"An error occurred while receiving M105 printer temperature information: {e}")
 
     return float(head_curr_temp), float(head_dest_temp), float(bed_curr_temp), float(bed_dest_temp)
 
@@ -187,6 +199,7 @@ def get_temp_hum_SI7021():
     #SI7021 address = 0x40
     #Read temp - No-hold master mode (no clock stretching) = 0xF3
     
+    global i2c
     temp_raw = bytearray(2)
     hum_raw = bytearray(2)
     
@@ -212,6 +225,7 @@ def get_temp_hum_AHT31():
     #CRC not used
     #2 bytes 0x24 and 0x16 means quick measurment with no clock stretching
     
+    global i2c
     i2c.writeto(0x44, bytearray([0x24, 0x16]), stop=False) 
     
     temp_hum_raw = bytearray(6)
@@ -227,67 +241,9 @@ def get_temp_hum_AHT31():
     return round(temperature, 2), round(humidity, 2)
 
 def get_temp_press_BMP280():
+    #Returns tuple of float value of Temperature and Pressure
     
+    global i2c
     sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address = 0x76)
     
     return round(sensor.temperature, 2), round(sensor.pressure, 2)
-
-
-def main(args):
-    
-    # Clear display.
-    oled.fill(0)
-    oled.show()
-
-  
-    # Create blank image for drawing.
-    # Make sure to create image with mode '1' for 1-bit color.
-    image = Image.new("1", (oled.width, oled.height))
-    
-    # Get drawing object to draw on image.
-    draw = ImageDraw.Draw(image)
-    
-    # Load default font.
-    font = ImageFont.load_default()
-    
-    # Draw Some Text
-    text = "RASPRINTER"
-    (font_width, font_height) = font.getsize(text)
-    draw.text(
-        (oled.width // 2 - font_width // 2, oled.height // 2 - font_height // 2),
-        text,
-        font=font,
-        fill=255,
-    )
-    
-    # Display image
-    oled.image(image)
-    oled.show()
-      
-    
-    while True:
-        print('--------RASPRINTER--------')
-        print('0. Zakończ program')
-        print('1. Odczyt temperatur drukarki')
-        print('2. Odczyt temperatur SI7021')
-        option = input('wpisz numer opcji: ')
-        if option == '0':
-            return 0
-        elif option == '1':
-            hct, hdt, bct, bdt = get_temp_M105()
-            print("\nbiezaca temperatura glowicy: " + str(hct))
-            print("docelowa temperatura glowicy: " + str(hdt))
-            print("biezaca temperatura stolu: " + str(bct))
-            print("docelowa temperatura stolu: " + str(bdt))
-        elif option == '2':
-            print('temperatura SI7021:')
-            print("%.2f°C" % round(get_temp_SI7021(), 2))
-            #print(get_temp_SI7021())
-        else:
-            print("bledny wybor!")
-    
-    return 0
-
-if __name__ == '__main__':
-    import sys
-    sys.exit(main(sys.argv))

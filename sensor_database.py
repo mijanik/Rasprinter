@@ -1,5 +1,7 @@
 from raspfunc import get_temp_M105, get_temp_hum_SI7021, get_temp_hum_AHT31, get_temp_press_BMP280
 import numpy as np
+from enum import Enum
+
 class SensorDatabase:
     def __init__(self):
         self.MonitorRunningFlag = 0
@@ -60,5 +62,9 @@ class DataBuffer:
             
 MyData = DataBuffer()
 
-if __name__ == '__main__':
-    pass
+class SensorErrorCode(Enum):
+    PrintheadCurrentTemp = 1
+    PrintbedCurrentTemp = 2
+    SI7021Temp = 3
+    AHT31Temp = 4
+    BMP280Temp = 5
