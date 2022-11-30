@@ -7,43 +7,43 @@
 		</tr>
 		<tr>
 			<td>Printhead temperature</td>
-			<td>{{ nozzle_temp }} °C</td>
+			<td>{{ var.nozzle_temp }} °C</td>
 		</tr>
 		<tr>
 			<td>Printhead target temperature</td>
-			<td>{{ target_nozzle_temp }} °C</td>
+			<td>{{ var.target_nozzle_temp }} °C</td>
 		</tr>
 		<tr>
 			<td>Heatbed temperature</td>
-			<td>{{ bed_temp }} °C</td>
+			<td>{{ var.bed_temp }} °C</td>
 		</tr>
 		<tr>
 			<td>Heatbed target temperature</td>
-			<td>{{ target_bed_temp }} °C</td>
+			<td>{{ var.target_bed_temp }} °C</td>
 		</tr>
 		<tr>
 			<td>SI7021 Temperature</td>
-			<td>{{ si7021_temp }} °C</td>
+			<td>{{ var.si7021_temp }} °C</td>
 		</tr>
 		<tr>
 			<td>SI7021 Humidty</td>
-			<td>{{ si7021_hum }} %</td>
+			<td>{{ var.si7021_hum }} %</td>
 		</tr>
 		<tr>
 			<td>AHT31 Temperature</td>
-			<td>{{ AHT31_temp }} °C</td>
+			<td>{{ var.AHT31_temp }} °C</td>
 		</tr>
 		<tr>
 			<td>AHT31 Humidty</td>
-			<td>{{ AHT31_hum }} %</td>
+			<td>{{ var.AHT31_hum }} %</td>
 		</tr>
 		<tr>
 			<td>BMP280 Temperature</td>
-			<td>{{ BMP280_temp }} °C</td>
+			<td>{{ var.BMP280_temp }} °C</td>
 		</tr>
 		<tr>
 			<td>BMP280 Pressure</td>
-			<td>{{ BMP280_press }} hPa</td>
+			<td>{{ var.BMP280_press }} hPa</td>
 		</tr>
 	</table>
 
@@ -51,7 +51,7 @@
 	<a href=\><button class="button">Measurement</button></a>
 
 	<br><br>
-	<a href=\TOGGLE_MONITOR><button class="button">Toggle monitor status: {{ MonitorRunningFlag }}</button></a>
+	<a href=\TOGGLE_MONITOR><button class="button">Toggle monitor status: {{ var.MonitorRunningFlag }}</button></a>
 
 	<br><br>
 	<a href=\EMERGENCY_STOP><button class="button">Emergency STOP</button></a>

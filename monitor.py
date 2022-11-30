@@ -42,19 +42,21 @@ def MainMonitor():
             
             status_OLED("ON")
            
-            CurrentSeconds = time.time()
-            if CurrentSeconds >= BlinkSecondsTimestamp + 5:
-                set_LED('RED', LEDStatus)
-                LEDStatus ^= 1
-                BlinkSecondsTimestamp = CurrentSeconds
-            
-                MySensors.ReadSensors()
-                TemperatureStatus = CheckTemperaturesAbnormal()
-                MyData.UpdateData()
-            
-            if TemperatureStatus != 0:
+            # Toggle status LED
+            set_LED('RED', LEDStatus)
+            LEDStatus ^= 1                                  
+        
+            MySensors.ReadSensors()                         # Read data from sensors  
+            TemperatureStatus = CheckTemperaturesAbnormal() # Check if all temperatures are safe
+            MyData.UpdateData()                             # Update data for Charts
+        
+            # If at least one temperature is unsafe - beep and turn printer OFF
+            if TemperatureStatus != 0: 
                 play_tone_M300()
                 set_relay("OFF")
         
         elif MySensors.MonitorRunningFlag == 0:
             status_OLED("OFF")
+
+        time.sleep(5)
+        

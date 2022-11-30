@@ -6,58 +6,38 @@ from monitor import MainMonitor
 from camera_pi import Camera, gen
 from turbo_flask import Turbo
 import time
+from flask_variables import MyWebVariables
 
 app = Flask(__name__)
 turbo = Turbo(app)
 
 @app.route('/')
 def index():
-    if MySensors.MonitorRunningFlag == 0:
+    
+    # If monitor is OFF - make a measurment and update charts
+    if MySensors.MonitorRunningFlag == 0: 
         MySensors.ReadSensors()
         MyData.UpdateData()
 
-    return render_template('index.html', nozzle_temp=MySensors.PrintheadCurrentTemp, 
-                           target_nozzle_temp=MySensors.PrintheadTargetTemp, 
-                           bed_temp = MySensors.PrintbedCurrentTemp, 
-                           target_bed_temp = MySensors.PrintbedTargetTemp, 
-                           si7021_temp = MySensors.SI7021Temp, si7021_hum = MySensors.SI7021Hum, 
-                           AHT31_temp = MySensors.AHT31Temp, AHT31_hum = MySensors.AHT31Hum, 
-                           BMP280_temp = MySensors.BMP280Temp, BMP280_press = MySensors.BMP280Pres, 
-                           MonitorRunningFlag = MySensors.MonitorRunningFlag,
-                           labels = MyData.labels,
-                           PrintheadCurrentTempData = MyData.PrintheadCurrentTemp,
-                           PrintbedCurrentTempData = MyData.PrintbedCurrentTemp,
-                           PrintheadTargetTempData = MyData.PrintheadTargetTemp,
-                           PrintbedTargetTempData = MyData.PrintbedTargetTemp)
+    return render_template('index.html', var = MyWebVariables.WebDict())
     
 def update_load():
     with app.app_context():
         while True:
-            time.sleep(5)
-            turbo.push(turbo.replace(render_template('panel.html', nozzle_temp=MySensors.PrintheadCurrentTemp, 
-                           target_nozzle_temp=MySensors.PrintheadTargetTemp, 
-                           bed_temp = MySensors.PrintbedCurrentTemp, 
-                           target_bed_temp = MySensors.PrintbedTargetTemp, 
-                           si7021_temp = MySensors.SI7021Temp, si7021_hum = MySensors.SI7021Hum, 
-                           AHT31_temp = MySensors.AHT31Temp, AHT31_hum = MySensors.AHT31Hum, 
-                           BMP280_temp = MySensors.BMP280Temp, BMP280_press = MySensors.BMP280Pres, 
-                           MonitorRunningFlag = MySensors.MonitorRunningFlag), 'center_panel'))
+            time.sleep(5) # Refresh Chart and Panel every 5 seconds
+            turbo.push(turbo.replace(render_template('panel.html', var = MyWebVariables.WebDict()), 'center_panel'))
             
-            turbo.push(turbo.replace(render_template('chart.html', labels = MyData.labels,
-                           PrintheadCurrentTempData = MyData.PrintheadCurrentTemp,
-                           PrintbedCurrentTempData = MyData.PrintbedCurrentTemp,
-                           PrintheadTargetTempData = MyData.PrintheadTargetTemp,
-                           PrintbedTargetTempData = MyData.PrintbedTargetTemp,
-                           SI7021TempData = MyData.SI7021Temp,
-                           AHT31TempData = MyData.AHT31Temp,
-                           BMP280TempData = MyData.BMP280Temp), 'center_chart'))
+            turbo.push(turbo.replace(render_template('chart.html', var = MyWebVariables.WebDict()), 'center_chart'))
 
 @app.before_first_request
 def before_first_request():
-    print("Started Flask Thread")
+    
     init_IO()
+    print("Finished Initialization")
+    
     threading.Thread(target=MainMonitor).start()
     print("Started Monitor")
+    
     threading.Thread(target=update_load).start()
     print("Started TurboFlask")
 
