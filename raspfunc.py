@@ -19,10 +19,10 @@ def init_IO():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
-    GPIO.setup(12, GPIO.OUT)
-    GPIO.setup(13, GPIO.OUT)
-    GPIO.setup(19, GPIO.OUT)
-    GPIO.setup(26, GPIO.OUT)
+    GPIO.setup(12, GPIO.OUT) # LED
+    GPIO.setup(13, GPIO.OUT) # LED
+    GPIO.setup(19, GPIO.OUT) # LED
+    GPIO.setup(26, GPIO.OUT) # Relay
     GPIO.output(12, 0)
     GPIO.output(13, 0)
     GPIO.output(19, 0)
@@ -41,15 +41,21 @@ def init_IO():
     
     print("Initializing I2C Bus")
     global i2c 
-    i2c = busio.I2C(board.SCL, board.SDA)
+    try:
+        i2c = busio.I2C(board.SCL, board.SDA)
+    except Exception as e:
+        print(f"An error occurred while initializing I2C: {e}")
     
     print("Initializing OLED")
     global oled
-    oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=0x3C)
     global MyOLED
-    MyOLED = OLEDStatus()
+    try:
+        oled = adafruit_ssd1306.SSD1306_I2C(128, 64, i2c, addr=0x3C)
+        MyOLED = OLEDStatus()
+    except Exception as e:
+        print(f"An error occurred while initializing OLED screen: {e}")
 
-    print("OK")
+    print("Rasprinter is ready")
 
 class OLEDStatus:
     def __init__(self):
@@ -60,6 +66,7 @@ def set_relay(RelayStatus: str):
     # ON or OFF
     
     global GPIO
+    
     if RelayStatus == "ON":
         GPIO.output(12, 1)
     elif RelayStatus == "OFF":
@@ -93,6 +100,8 @@ def set_LED(LED_Color: str, LED_Status):
 def status_OLED(state):
     # Shows Monitor status on OLED display
     
+    global MyOLED
+    
     if state == "ON" and MyOLED.CurrentState != "ON":
         MyOLED.Text = "Monitor is ON"
         MyOLED.CurrentState = "ON"
@@ -105,23 +114,29 @@ def status_OLED(state):
 def print_OLED(text):
     # Shows standard text on OLED display
     
-    oled.fill(0)
-    oled.show()
+    global oled
+    
+    try:
+        oled.fill(0)
+        oled.show()
 
-    image = Image.new("1", (oled.width, oled.height))
-    draw = ImageDraw.Draw(image)
-    font = ImageFont.load_default()
-    
-    (font_width, font_height) = font.getsize(text)
-    draw.text(
-        (oled.width // 2 - font_width // 2, oled.height // 2 - font_height // 2),
-        text,
-        font=font,
-        fill=255,
-    )
-    
-    oled.image(image)
-    oled.show()
+        image = Image.new("1", (oled.width, oled.height))
+        draw = ImageDraw.Draw(image)
+        font = ImageFont.load_default()
+        
+        (font_width, font_height) = font.getsize(text)
+        draw.text(
+            (oled.width // 2 - font_width // 2, oled.height // 2 - font_height // 2),
+            text,
+            font=font,
+            fill=255,
+        )
+        
+        oled.image(image)
+        oled.show()
+    except Exception as e:
+        print(f"An error occurred during communication with OLED Screen: {e}")
+
 
 def emergency_stop_M112():
     # uses M112 marlin command
@@ -144,13 +159,17 @@ def play_tone_M300():
     # need beep duration and frequency parameters
     
     global ser
-    ser.write(b"M300\n")
-    time.sleep(1)
-    while ser.in_waiting < 2:
-        time.sleep(0.01)
-    line = ser.readline().decode('utf-8').rstrip()
-    if line == "ok":
-        print("Used command <M300>")
+    
+    try:
+        ser.write(b"M300\n")
+        time.sleep(1)
+        while ser.in_waiting < 2:
+            time.sleep(0.01)
+        line = ser.readline().decode('utf-8').rstrip()
+        if line == "ok":
+            print("Used command <M300>")
+    except Exception as e:
+        print(f"An error occurred while sending M300 Play Tone: {e}")
 
 def get_temp_M105():
     # uses M105 marlin command (need global serial variable "ser")
@@ -195,55 +214,75 @@ def get_temp_M105():
 
 
 def get_temp_hum_SI7021():
-    #Returns tuple of float value of Temperature and Humidity
-    #SI7021 address = 0x40
-    #Read temp - No-hold master mode (no clock stretching) = 0xF3
+    # Returns tuple of float value of Temperature and Humidity
+    # SI7021 address = 0x40
+    # Read temp - No-hold master mode (no clock stretching) = 0xF3
     
     global i2c
     temp_raw = bytearray(2)
     hum_raw = bytearray(2)
+    temperature = 0
+    humidity = 0
     
-    i2c.writeto(0x40, bytes([0xF3]), stop=False) 
-    time.sleep(0.1)
-    i2c.readfrom_into(0x40, temp_raw)
-    #i2c.writeto_then_readfrom(0x40, bytes([0xF3]), temp_raw, stop=False) #Cannot use because of NACK - causes error
-    
-    temp_raw_int = temp_raw[0] * 256 + temp_raw[1]
-    temperature = ((175.72 * temp_raw_int)/65536)-48.85
-    
-    i2c.writeto(0x40, bytes([0xF5]), stop=False) 
-    time.sleep(0.1)
-    i2c.readfrom_into(0x40, hum_raw)
-    hum_raw_int = hum_raw[0] * 256 + hum_raw[1]
-    humidity = ((125 * hum_raw_int)/65536)-6
+    try:
+        # Read and calculate temperature data
+        i2c.writeto(0x40, bytes([0xF3]), stop=False) 
+        time.sleep(0.1)
+        i2c.readfrom_into(0x40, temp_raw)
+        temp_raw_int = temp_raw[0] * 256 + temp_raw[1]
+        temperature = ((175.72 * temp_raw_int)/65536)-48.85
+        
+        # Read and calculate humidity data
+        i2c.writeto(0x40, bytes([0xF5]), stop=False) 
+        time.sleep(0.1)
+        i2c.readfrom_into(0x40, hum_raw)
+        hum_raw_int = hum_raw[0] * 256 + hum_raw[1]
+        humidity = ((125 * hum_raw_int)/65536)-6
+        
+    except Exception as e:
+        print(f"An error occurred during communication with SI7021 sensor: {e}")
     
     return round(temperature, 2), round(humidity, 2)
 
 def get_temp_hum_AHT31():
-    #Returns tuple of float value of Temperature and Humidity
-    #SHT31 address = 0x44
-    #CRC not used
-    #2 bytes 0x24 and 0x16 means quick measurment with no clock stretching
+    # Returns tuple of float value of Temperature and Humidity
+    # SHT31 address = 0x44
+    # CRC checksum not used
+    # 2 bytes 0x24 and 0x16 means quick measurment with no clock stretching
     
     global i2c
-    i2c.writeto(0x44, bytearray([0x24, 0x16]), stop=False) 
-    
     temp_hum_raw = bytearray(6)
-    time.sleep(0.1)
+    temperature = 0
+    humidity = 0
     
-    i2c.readfrom_into(0x44, temp_hum_raw)
-    
-    temperature = temp_hum_raw[0] * 256 + temp_hum_raw[1]
-    temperature = (175 * temperature / 65535) - 45
-    
-    humidity = 100 * (temp_hum_raw[3] * 256 + temp_hum_raw[4]) / 65535
+    try:
+        # Read raw temperature and humidity data
+        i2c.writeto(0x44, bytearray([0x24, 0x16]), stop=False) 
+        time.sleep(0.1)
+        i2c.readfrom_into(0x44, temp_hum_raw)
+        
+        # Calculate/decode received data
+        temperature = temp_hum_raw[0] * 256 + temp_hum_raw[1]
+        temperature = (175 * temperature / 65535) - 45
+        humidity = 100 * (temp_hum_raw[3] * 256 + temp_hum_raw[4]) / 65535
+        
+    except Exception as e:
+        print(f"An error occurred during communication with SHT31 sensor: {e}")
     
     return round(temperature, 2), round(humidity, 2)
 
 def get_temp_press_BMP280():
-    #Returns tuple of float value of Temperature and Pressure
+    # Returns tuple of float value of Temperature and Pressure
     
     global i2c
-    sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address = 0x76)
+    temperature = 0
+    pressure = 0
     
-    return round(sensor.temperature, 2), round(sensor.pressure, 2)
+    try:
+        sensor = adafruit_bmp280.Adafruit_BMP280_I2C(i2c, address = 0x76)
+        temperature = sensor.temperature
+        pressure = sensor.pressure
+    except Exception as e:
+        print(f"An error occurred during communication with BMP280 sensor: {e}")
+        
+    return round(temperature, 2), round(pressure, 2)

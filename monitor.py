@@ -32,16 +32,15 @@ def MainMonitor():
     TemperatureStatus = 0
     
     set_LED('GREEN', 'ON')
-    print_OLED("Hello!")
+    print_OLED("RASPRINTER")
     
-    #Monitoring loop
+    # Monitoring loop
     while True:
         
-        #If monitor is turned ON
+        # If monitor flag is ON
         if MySensors.MonitorRunningFlag == 1:
             
             status_OLED("ON")
-            
            
             CurrentSeconds = time.time()
             if CurrentSeconds >= BlinkSecondsTimestamp + 5:
@@ -55,7 +54,7 @@ def MainMonitor():
             
             if TemperatureStatus != 0:
                 play_tone_M300()
-                set_relay("ON")
+                set_relay("OFF")
         
         elif MySensors.MonitorRunningFlag == 0:
             status_OLED("OFF")
