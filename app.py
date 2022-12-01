@@ -1,12 +1,12 @@
 from flask import Flask, render_template, redirect, url_for, Response
-from raspfunc import emergency_stop_M112, play_tone_M300, init_IO
-from sensor_database import MySensors, MyData
+from raspfunc import emergency_stop_M112, play_tone_M300, init_IO, set_relay
+from sensor_database import MySensors, MyData, MyWebVariables
 import threading
 from monitor import MainMonitor
 from camera_pi import Camera, gen
 from turbo_flask import Turbo
 import time
-from flask_variables import MyWebVariables
+
 
 app = Flask(__name__)
 turbo = Turbo(app)
@@ -55,6 +55,17 @@ def emergency_stop():
 def beep():
     play_tone_M300()
     return redirect(url_for('index'))
+
+@app.route('/POWER_ON')
+def power_on():
+    set_relay("ON")
+    return redirect(url_for('index'))
+
+@app.route('/POWER_OFF')
+def power_off():
+    set_relay("OFF")
+    return redirect(url_for('index'))
+
 
 @app.route('/video_feed')
 def video_feed():

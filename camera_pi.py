@@ -33,6 +33,7 @@ class Camera(object):
             camera.resolution = (1280, 720)
             camera.hflip = True
             camera.vflip = True
+            camera.rotation = 180
 
             # let camera warm up
             camera.start_preview()
