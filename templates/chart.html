@@ -5,7 +5,7 @@
 
 	// define the chart data
 	var chartData = {
-		labels : [{% for item in labels %}
+		labels : [{% for item in var.labels %}
 			"{{item}}",
 			{% endfor %}],
 
@@ -22,7 +22,7 @@
 			pointHoverBorderWidth: 2,
 			pointRadius: 2,
 			pointHitRadius: 10,
-			data : [{% for item in PrintheadCurrentTempData %}
+			data : [{% for item in var.PrintheadCurrentTempData %}
 				{{item}},
 				{% endfor %}],
 			
@@ -40,7 +40,7 @@
 			pointHoverBorderWidth: 2,
 			pointRadius: 2,
 			pointHitRadius: 10,
-			data : [{% for item in PrintbedCurrentTempData %}
+			data : [{% for item in var.PrintbedCurrentTempData %}
 				{{item}},
 				{% endfor %}],
 			
@@ -58,7 +58,7 @@
 			pointHoverBorderWidth: 2,
 			pointRadius: 2,
 			pointHitRadius: 10,
-			data : [{% for item in PrintheadTargetTempData %}
+			data : [{% for item in var.PrintheadTargetTempData %}
 				{{item}},
 				{% endfor %}],
 			
@@ -76,7 +76,7 @@
 			pointHoverBorderWidth: 2,
 			pointRadius: 2,
 			pointHitRadius: 10,
-			data : [{% for item in PrintbedTargetTempData %}
+			data : [{% for item in var.PrintbedTargetTempData %}
 				{{item}},
 				{% endfor %}],
 			
@@ -106,12 +106,12 @@
 
 	// define the chart data
 	var chartData = {
-		labels : [{% for item in labels %}
+		labels : [{% for item in var.labels %}
 			"{{item}}",
 			{% endfor %}],
 
 		datasets : [{
-			label: 'SI7021 Temperature',
+			label: 'Printhead [SI7021] Temperature',
 			fill: false,
 			lineTension: 0.1,
 			backgroundColor: "rgba(0,153,51,0.4)",
@@ -123,13 +123,13 @@
 			pointHoverBorderWidth: 2,
 			pointRadius: 2,
 			pointHitRadius: 10,
-			data : [{% for item in SI7021TempData %}
+			data : [{% for item in var.SI7021TempData %}
 				{{item}},
 				{% endfor %}],
 			
 		},
 		{
-			label: 'SHT31 Temperature',
+			label: 'Printbed [SHT31] Temperature',
 			fill: false,
 			lineTension: 0.1,
 			backgroundColor: "rgba(255,153,0,0.4)",
@@ -141,13 +141,13 @@
 			pointHoverBorderWidth: 2,
 			pointRadius: 2,
 			pointHitRadius: 10,
-			data : [{% for item in AHT31TempData %}
+			data : [{% for item in var.SHT31TempData %}
 				{{item}},
 				{% endfor %}],
 			
 		},
 		{
-			label: 'BMP280 Temperature',
+			label: 'PSU [BMP280] Temperature',
 			fill: false,
 			lineTension: 0.1,
 			backgroundColor: "rgba(0,102,255,0.4)",
@@ -159,7 +159,7 @@
 			pointHoverBorderWidth: 2,
 			pointRadius: 2,
 			pointHitRadius: 10,
-			data : [{% for item in BMP280TempData %}
+			data : [{% for item in var.BMP280TempData %}
 				{{item}},
 				{% endfor %}],
 			

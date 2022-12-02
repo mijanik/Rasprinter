@@ -15,8 +15,8 @@ def CheckTemperaturesAbnormal():
     elif MySensors.SI7021Temp > 50:
         return SensorErrorCode['SI7021Temp'].value
     
-    elif MySensors.AHT31Temp > 50:
-        return SensorErrorCode['AHT31Temp'].value
+    elif MySensors.SHT31Temp > 50:
+        return SensorErrorCode['SHT31Temp'].value
     
     elif MySensors.BMP280Temp > 50:
         return SensorErrorCode['BMP280Temp'].value

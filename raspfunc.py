@@ -244,7 +244,7 @@ def get_temp_hum_SI7021():
     
     return round(temperature, 2), round(humidity, 2)
 
-def get_temp_hum_AHT31():
+def get_temp_hum_SHT31():
     # Returns tuple of float value of Temperature and Humidity
     # SHT31 address = 0x44
     # CRC checksum not used
