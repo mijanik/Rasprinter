@@ -2,6 +2,9 @@
 ## Under development by Miłosz Janik
 ## **Sharing, copying full or a part of project is strictly prohibited**
 Google Slides - project description (31.10.2022) https://docs.google.com/presentation/d/1w7VxQLNavUgkZQrJ2IbT4koUca9OFTzJjdb9SjkVRik/edit?usp=sharing
+
+![alt text](https://github.com/mijanik/Rasprinter/blob/master/Rasprinter_interface.png)
+
 ###### Project purpose
 - To monitor 3D printer parameters for safety reasons
 ###### Project physical components
@@ -21,3 +24,4 @@ Google Slides - project description (31.10.2022) https://docs.google.com/present
 - Made for Diploma Engineering Thesis - Bachelor degree - "System monitorowania parametrów pracy drukarki 3D"
 - Thesis promoter: PhD Agnieszka Dąbrowska-Boruch
 - Field of study: Electronics and Telecommunications
+
