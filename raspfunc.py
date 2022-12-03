@@ -19,17 +19,17 @@ def init_IO():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
 
-    GPIO.setup(12, GPIO.OUT) # LED
+    GPIO.setup(12, GPIO.OUT) # Relay
     GPIO.setup(13, GPIO.OUT) # LED
     GPIO.setup(19, GPIO.OUT) # LED
-    GPIO.setup(26, GPIO.OUT) # Relay
+    GPIO.setup(26, GPIO.OUT) # LED
     GPIO.output(12, 0)
     GPIO.output(13, 0)
     GPIO.output(19, 0)
     GPIO.output(26, 0)
 
     GPIO.output(12, 1) # Turn on Printer Relay
-    time.sleep(10)     # Wait for printer to start
+    time.sleep(15)     # Wait for printer to start
     
     print("Initializing serial connection to printer at /dev/ttyACM0, baudrate 115200")
     global ser 
