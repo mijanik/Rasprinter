@@ -73,8 +73,8 @@ class WebpageVariables:
     
     def __init__(self):
         self.webpage_variables = {
-        'nozzle_temp' : 0,
-        'target_nozzle_temp' : 0,
+        'printhead_temp' : 0,
+        'target_printhead_temp' : 0,
         'bed_temp' : 0,
         'target_bed_temp' : 0,
         'HTU21D_temp' : 0, 
@@ -96,8 +96,8 @@ class WebpageVariables:
     
     def UpdateVariables(self):
         self.webpage_variables.update({
-        'nozzle_temp' : MySensors.PrintheadCurrentTemp,
-        'target_nozzle_temp' : MySensors.PrintheadTargetTemp,
+        'printhead_temp' : MySensors.PrintheadCurrentTemp,
+        'target_printhead_temp' : MySensors.PrintheadTargetTemp,
         'bed_temp' : MySensors.PrintbedCurrentTemp,
         'target_bed_temp' : MySensors.PrintbedTargetTemp,
         'HTU21D_temp' : MySensors.HTU21DTemp, 
