@@ -111,7 +111,7 @@
 			{% endfor %}],
 
 		datasets : [{
-			label: 'Printhead [SI7021] Temperature',
+			label: 'Printhead [HTU21D] Temperature',
 			fill: false,
 			lineTension: 0.1,
 			backgroundColor: "rgba(0,153,51,0.4)",
@@ -123,7 +123,7 @@
 			pointHoverBorderWidth: 2,
 			pointRadius: 2,
 			pointHitRadius: 10,
-			data : [{% for item in var.SI7021TempData %}
+			data : [{% for item in var.HTU21DTempData %}
 				{{item}},
 				{% endfor %}],
 			

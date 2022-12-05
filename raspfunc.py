@@ -213,9 +213,9 @@ def get_temp_M105():
     return float(head_curr_temp), float(head_dest_temp), float(bed_curr_temp), float(bed_dest_temp)
 
 
-def get_temp_hum_SI7021():
+def get_temp_hum_HTU21D():
     # Returns tuple of float value of Temperature and Humidity
-    # SI7021 address = 0x40
+    # HTU21D address = 0x40
     # Read temp - No-hold master mode (no clock stretching) = 0xF3
     
     global i2c
@@ -240,7 +240,7 @@ def get_temp_hum_SI7021():
         humidity = ((125 * hum_raw_int)/65536)-6
         
     except Exception as e:
-        print(f"An error occurred during communication with SI7021 sensor: {e}")
+        print(f"An error occurred during communication with HTU21D sensor: {e}")
     
     return round(temperature, 2), round(humidity, 2)
 
