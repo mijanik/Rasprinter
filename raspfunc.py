@@ -208,7 +208,8 @@ def get_temp_M105():
             result = re.search(' B:(.*?) @:', line)
             bed_dest_temp = result.group(1).split("/", 1)[1]
     except Exception as e:
-        print(f"An error occurred while receiving M105 printer temperature information: {e}")
+        print(f"An error occurred while receiving M105 printer \
+              temperature information: {e}")
 
     return float(head_curr_temp), float(head_dest_temp), float(bed_curr_temp), float(bed_dest_temp)
 

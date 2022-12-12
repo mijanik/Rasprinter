@@ -25,9 +25,11 @@ def update_load():
     with app.app_context():
         while True:
             time.sleep(5) # Refresh Chart and Panel every 5 seconds
-            turbo.push(turbo.replace(render_template('panel.html', var = MyWebVariables.WebDict()), 'center_panel'))
+            turbo.push(turbo.replace(render_template('panel.html', var = MyWebVariables.WebDict()), 
+                                     'center_panel'))
             
-            turbo.push(turbo.replace(render_template('chart.html', var = MyWebVariables.WebDict()), 'center_chart'))
+            turbo.push(turbo.replace(render_template('chart.html', var = MyWebVariables.WebDict()), 
+                                     'center_chart'))
 
 @app.before_first_request
 def before_first_request():
@@ -78,5 +80,7 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
-    threading.Thread(target=lambda: app.run(host='192.168.100.76', port=5000, debug=True, use_reloader=False)).start()
+    threading.Thread(target=lambda: app.run(host='192.168.100.76', 
+                                            port=5000, debug=True, 
+                                            use_reloader=False)).start()
     

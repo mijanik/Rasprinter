@@ -21,7 +21,9 @@ class SensorDatabase:
         self.BMP280Pres = 0.0
     
     def ReadSensors(self):
-        self.PrintheadCurrentTemp, self.PrintheadTargetTemp, self.PrintbedCurrentTemp, self.PrintbedTargetTemp = get_temp_M105()
+        self.PrintheadCurrentTemp, self.PrintheadTargetTemp, \
+        self.PrintbedCurrentTemp, self.PrintbedTargetTemp = get_temp_M105()
+        
         self.HTU21DTemp, self.HTU21DHum = get_temp_hum_HTU21D()
         self.SHT31Temp, self.SHT31Hum = get_temp_hum_SHT31()
         self.BMP280Temp, self.BMP280Pres = get_temp_press_BMP280()
