@@ -211,7 +211,8 @@ def get_temp_M105():
         print(f"An error occurred while receiving M105 printer \
               temperature information: {e}")
 
-    return float(head_curr_temp), float(head_dest_temp), float(bed_curr_temp), float(bed_dest_temp)
+    return float(head_curr_temp), float(head_dest_temp), \
+        float(bed_curr_temp), float(bed_dest_temp)
 
 
 def get_temp_hum_HTU21D():
