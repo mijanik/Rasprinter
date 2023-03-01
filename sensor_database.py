@@ -72,19 +72,13 @@ class SensorErrorCode(Enum):
     BMP280Temp = 5
 
 class WebpageVariables:
-    
     def __init__(self):
         self.webpage_variables = {
-        'printhead_temp' : 0,
-        'target_printhead_temp' : 0,
-        'bed_temp' : 0,
-        'target_bed_temp' : 0,
-        'HTU21D_temp' : 0, 
-        'HTU21D_hum' : 0,
-        'SHT31_temp' : 0, 
-        'SHT31_hum' : 0,
-        'BMP280_temp' : 0, 
-        'BMP280_press' : 0,
+        'printhead_temp' : 0, 'target_printhead_temp' : 0,
+        'bed_temp' : 0, 'target_bed_temp' : 0,
+        'HTU21D_temp' : 0, 'HTU21D_hum' : 0,
+        'SHT31_temp' : 0, 'SHT31_hum' : 0,
+        'BMP280_temp' : 0, 'BMP280_press' : 0,
         'MonitorRunningFlag' : 0,
         'labels' : 0,
         'PrintheadCurrentTempData' : 0,
@@ -95,7 +89,6 @@ class WebpageVariables:
         'SHT31TempData' : 0,
         'BMP280TempData' : 0
         }
-    
     def UpdateVariables(self):
         self.webpage_variables.update({
         'printhead_temp' : MySensors.PrintheadCurrentTemp,
@@ -118,7 +111,6 @@ class WebpageVariables:
         'SHT31TempData' : MyData.SHT31Temp,
         'BMP280TempData' : MyData.BMP280Temp
         })
-        
     def WebDict(self):
         self.UpdateVariables()
         return self.webpage_variables

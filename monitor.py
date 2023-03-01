@@ -46,9 +46,9 @@ def MainMonitor():
             set_LED('RED', LEDStatus)
             LEDStatus ^= 1                                  
         
-            MySensors.ReadSensors()                         # Read data from sensors  
-            TemperatureStatus = CheckTemperaturesAbnormal() # Check if all temperatures are safe
-            MyData.UpdateData()                             # Update data for Charts
+            MySensors.ReadSensors()
+            TemperatureStatus = CheckTemperaturesAbnormal()
+            MyData.UpdateData()
         
             # If at least one temperature is unsafe - beep and turn printer OFF
             if TemperatureStatus != 0: 

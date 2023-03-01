@@ -18,7 +18,6 @@ def init_IO():
     global GPIO
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-
     GPIO.setup(12, GPIO.OUT) # Relay
     GPIO.setup(13, GPIO.OUT) # LED
     GPIO.setup(19, GPIO.OUT) # LED
@@ -27,7 +26,6 @@ def init_IO():
     GPIO.output(13, 0)
     GPIO.output(19, 0)
     GPIO.output(26, 0)
-
     GPIO.output(12, 1) # Turn on Printer Relay
     time.sleep(15)     # Wait for printer to start
     
@@ -38,14 +36,12 @@ def init_IO():
         ser.reset_input_buffer()
     except Exception as e:
         print(f"An error occurred while initializing serial connection to printer: {e}")
-    
     print("Initializing I2C Bus")
     global i2c 
     try:
         i2c = busio.I2C(board.SCL, board.SDA)
     except Exception as e:
         print(f"An error occurred while initializing I2C: {e}")
-    
     print("Initializing OLED")
     global oled
     global MyOLED
@@ -54,7 +50,6 @@ def init_IO():
         MyOLED = OLEDStatus()
     except Exception as e:
         print(f"An error occurred while initializing OLED screen: {e}")
-
     print("Rasprinter is ready")
 
 class OLEDStatus:

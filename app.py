@@ -25,11 +25,8 @@ def update_load():
     with app.app_context():
         while True:
             time.sleep(5) # Refresh Chart and Panel every 5 seconds
-            turbo.push(turbo.replace(render_template('panel.html', var = MyWebVariables.WebDict()), 
-                                     'center_panel'))
-            
-            turbo.push(turbo.replace(render_template('chart.html', var = MyWebVariables.WebDict()), 
-                                     'center_chart'))
+            turbo.push(turbo.replace(render_template('panel.html', var = MyWebVariables.WebDict()), 'center_panel'))
+            turbo.push(turbo.replace(render_template('chart.html', var = MyWebVariables.WebDict()), 'center_chart'))
 
 @app.before_first_request
 def before_first_request():
